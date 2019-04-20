@@ -1,4 +1,4 @@
-// swift-tools-version:4.1
+// swift-tools-version:5.0
 //
 // Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 //
@@ -30,9 +30,9 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/IBM-Swift/LoggerAPI.git", .upToNextMajor(from: "1.0.0")),
-        .package(url: "https://github.com/apple/swift-nio.git", from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-nio-extras.git", from: "0.1.3"),
-        .package(url: "https://github.com/amzn/smoke-http.git", from: "1.0.0"),
+	.package(url: "https://github.com/apple/swift-nio.git", from: "2.0.0"),
+	.package(url: "https://github.com/apple/swift-nio-extras.git", .branch("master")),
+        .package(url: "https://github.com/CSCIX65G/smoke-http.git", .branch("swift5")),
     ],
     targets: [
         .target(

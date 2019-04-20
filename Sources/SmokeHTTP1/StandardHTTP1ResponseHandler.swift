@@ -83,7 +83,7 @@ struct StandardHTTP1ResponseHandler: HTTP1ResponseHandler {
             let data = body.data
             // create a buffer for the body and copy the body into it
             var newBuffer = ctx.channel.allocator.buffer(capacity: data.count)
-            newBuffer.write(bytes: data)
+            newBuffer.writeBytes(data)
             
             buffer = newBuffer
             bodySize = data.count
@@ -111,11 +111,11 @@ struct StandardHTTP1ResponseHandler: HTTP1ResponseHandler {
             ctx.write(self.wrapOutboundOut(.body(.byteBuffer(buffer))), promise: nil)
         }
         
-        let promise: EventLoopPromise<Void>? = self.keepAliveStatus.state ? nil : ctx.eventLoop.newPromise()
+        let promise: EventLoopPromise<Void>? = self.keepAliveStatus.state ? nil : ctx.eventLoop.makePromise()
         if let promise = promise {
             // if keep alive is false, close the channel when the response end
             // has been written
-            promise.futureResult.whenComplete { ctx.close(promise: nil) }
+            promise.futureResult.whenComplete { _ in ctx.close(promise: nil) }
         }
         
         // write the response end and flush

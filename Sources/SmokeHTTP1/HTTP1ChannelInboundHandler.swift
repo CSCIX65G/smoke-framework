@@ -162,7 +162,7 @@ class HTTP1ChannelInboundHandler: ChannelInboundHandler {
                                status: HTTPResponseStatus) {
         var headers = HTTPHeaders()
         var buffer = ctx.channel.allocator.buffer(capacity: responseString.utf8.count)
-        buffer.set(string: responseString, at: 0)
+        buffer.setString(responseString, at: 0)
         
         headers.add(name: HTTP1Headers.contentLength, value: "\(responseString.utf8.count)")
         ctx.write(self.wrapOutboundOut(.head(HTTPResponseHead(version: requestHead!.version,

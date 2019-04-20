@@ -224,12 +224,14 @@ extension HTTPMethod {
             return "UNSUBSCRIBE"
         case .RAW(let value):
             return value
+        case .SOURCE:
+            return "SOURCE"
         }
     }
 }
 
 extension HTTPMethod: Hashable {
-    public var hashValue: Int {
-        return rawValue.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
     }
 }
