@@ -32,7 +32,7 @@ let package = Package(
         .package(url: "https://github.com/IBM-Swift/LoggerAPI.git", .upToNextMajor(from: "1.0.0")),
 	.package(url: "https://github.com/apple/swift-nio.git", from: "2.0.0"),
 	.package(url: "https://github.com/apple/swift-nio-extras.git", .branch("master")),
-        .package(url: "https://github.com/CSCIX65G/smoke-http.git", .branch("swift5")),
+        .package(url: "https://github.com/CSCIX65G/smoke-http.git", .branch("nio2")),
     ],
     targets: [
         .target(
