@@ -1,4 +1,4 @@
-// Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License").
 // You may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public protocol HTTP1OperationDelegate: OperationDelegate {
         requestHead: RequestHeadType,
         output: OutputType,
         responseHandler: ResponseHandlerType,
-        invocationContext: SmokeServerInvocationContext)
+        invocationContext: SmokeServerInvocationContext<TraceContextType>)
     
     /**
      Function to handle a successful response from an operation.
@@ -79,5 +79,5 @@ public protocol HTTP1OperationDelegate: OperationDelegate {
                                                            location: OperationOutputHTTPLocation,
                                                            output: OutputType,
                                                            responseHandler: ResponseHandlerType,
-                                                           invocationContext: SmokeServerInvocationContext)
+                                                           invocationContext: SmokeServerInvocationContext<TraceContextType>)
 }

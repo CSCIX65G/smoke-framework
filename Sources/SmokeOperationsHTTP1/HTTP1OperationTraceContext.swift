@@ -1,4 +1,4 @@
-// Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License").
 // You may not use this file except in compliance with the License.
@@ -11,22 +11,15 @@
 // express or implied. See the License for the specific language governing
 // permissions and limitations under the License.
 //
-//  InvocationStrategy.swift
-//  SmokeOperations
+// HTTP1OperationTraceContext.swift
+// SmokeOperationsHTTP1
 //
 
 import Foundation
+import SmokeOperations
+import NIOHTTP1
 
-/**
- A strategy protocol that manages how to invocate a handler.
- */
-public protocol InvocationStrategy {
-    
-    /**
-     Function to handle the invocation of the handler.
- 
-     - Parameters:
-        - handler: The handler to invocate.
-     */
-    func invoke(handler: @escaping () -> ())
+public protocol HTTP1OperationTraceContext: OperationTraceContext
+    where RequestHeadType == HTTPRequestHead, ResponseHeadersType == HTTPHeaders, ResponseStatusType == HTTPResponseStatus {
+
 }

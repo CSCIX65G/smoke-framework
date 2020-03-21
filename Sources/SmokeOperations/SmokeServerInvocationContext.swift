@@ -1,4 +1,4 @@
-// Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License").
 // You may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 //
 import Foundation
 
-public struct SmokeServerInvocationContext {
-    public let invocationReporting: SmokeServerInvocationReporting
+public struct SmokeServerInvocationContext<TraceContextType: OperationTraceContext> {
+    public let invocationReporting: SmokeServerInvocationReporting<TraceContextType>
     public let requestReporting: SmokeServerOperationReporting
     
-    public init(invocationReporting: SmokeServerInvocationReporting,
+    public init(invocationReporting: SmokeServerInvocationReporting<TraceContextType>,
                 requestReporting: SmokeServerOperationReporting) {
         self.invocationReporting = invocationReporting
         self.requestReporting = requestReporting

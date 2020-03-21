@@ -1,4 +1,4 @@
-// Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License").
 // You may not use this file except in compliance with the License.
@@ -11,26 +11,18 @@
 // express or implied. See the License for the specific language governing
 // permissions and limitations under the License.
 //
-//  GlobalDispatchQueueAsyncInvocationStrategy.swift
-//  SmokeOperations
+//  HTTP1RequestTraceContext.swift
+//  SmokeHTTP1
 //
 
 import Foundation
+import Logging
+import NIOHTTP1
 
-/**
- An InvocationStrategy that will invocate the handler on
- DispatchQueue.global(), not waiting for it to complete.
- */
-public struct GlobalDispatchQueueAsyncInvocationStrategy: InvocationStrategy {
-    let queue = DispatchQueue.global()
+public protocol HTTP1RequestInvocationContext {
     
-    public init() {
-        
-    }
+    var logger: Logger { get }
     
-    public func invoke(handler: @escaping () -> ()) {
-        queue.async {
-            handler()
-        }
-    }
+    func handleInwardsRequestComplete(httpHeaders: inout HTTPHeaders, status: HTTPResponseStatus,
+                                      body: (contentType: String, data: Data)?)
 }

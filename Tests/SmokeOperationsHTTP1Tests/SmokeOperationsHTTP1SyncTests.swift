@@ -1,4 +1,4 @@
-// Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License").
 // You may not use this file except in compliance with the License.
@@ -112,9 +112,11 @@ enum TestOperations: String, OperationIdentity {
     }
 }
 
-fileprivate let handlerSelector: StandardSmokeHTTP1HandlerSelector<ExampleContext, JSONPayloadHTTP1OperationDelegate, TestOperations> = {
-    var newHandlerSelector = StandardSmokeHTTP1HandlerSelector<ExampleContext, JSONPayloadHTTP1OperationDelegate, TestOperations>(
-        defaultOperationDelegate: JSONPayloadHTTP1OperationDelegate())
+typealias TestJSONPayloadHTTP1OperationDelegate = GenericJSONPayloadHTTP1OperationDelegate<TestHttpResponseHandler, TestOperationTraceContext>
+
+fileprivate let handlerSelector: StandardSmokeHTTP1HandlerSelector<ExampleContext, TestJSONPayloadHTTP1OperationDelegate, TestOperations> = {
+    var newHandlerSelector = StandardSmokeHTTP1HandlerSelector<ExampleContext, TestJSONPayloadHTTP1OperationDelegate, TestOperations>(
+        defaultOperationDelegate: GenericJSONPayloadHTTP1OperationDelegate())
     newHandlerSelector.addHandlerForOperation(
         .exampleOperation, httpMethod: .POST,
         operation: handleExampleOperation,

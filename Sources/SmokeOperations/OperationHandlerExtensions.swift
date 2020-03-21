@@ -1,4 +1,4 @@
-// Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License").
 // You may not use this file except in compliance with the License.
@@ -87,8 +87,9 @@ public extension OperationHandler {
         operationDelegate: OperationDelegateType,
         requestHead: OperationDelegateType.RequestHeadType,
         responseHandler: OperationDelegateType.ResponseHandlerType,
-        invocationContext: SmokeServerInvocationContext)
+        invocationContext: SmokeServerInvocationContext<TraceContextType>)
     where RequestHeadType == OperationDelegateType.RequestHeadType,
+    TraceContextType == OperationDelegateType.TraceContextType,
     ResponseHandlerType == OperationDelegateType.ResponseHandlerType {
             let logger = invocationContext.invocationReporting.logger
         
@@ -147,9 +148,10 @@ public extension OperationHandler {
         operationDelegate: OperationDelegateType,
         requestHead: RequestHeadType,
         responseHandler: ResponseHandlerType,
-        outputHandler: @escaping ((RequestHeadType, OutputType, ResponseHandlerType, SmokeServerInvocationContext) -> Void),
-        invocationContext: SmokeServerInvocationContext)
+        outputHandler: @escaping ((RequestHeadType, OutputType, ResponseHandlerType, SmokeServerInvocationContext<TraceContextType>) -> Void),
+        invocationContext: SmokeServerInvocationContext<TraceContextType>)
     where RequestHeadType == OperationDelegateType.RequestHeadType,
+    TraceContextType == OperationDelegateType.TraceContextType,
     ResponseHandlerType == OperationDelegateType.ResponseHandlerType {
             let logger = invocationContext.invocationReporting.logger
         

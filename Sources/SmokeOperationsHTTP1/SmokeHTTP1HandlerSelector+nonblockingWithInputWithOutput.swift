@@ -1,4 +1,4 @@
-// Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License").
 // You may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public extension SmokeHTTP1HandlerSelector {
         func outputHandler(requestHead: DefaultOperationDelegateType.RequestHeadType,
                            output: OutputType,
                            responseHandler: DefaultOperationDelegateType.ResponseHandlerType,
-                           invocationContext: SmokeServerInvocationContext) {
+                           invocationContext: SmokeServerInvocationContext<TraceContextType>) {
             delegateToUse.handleResponseForOperation(requestHead: requestHead,
                                                      location: outputLocation,
                                                      output: output,
@@ -92,6 +92,7 @@ public extension SmokeHTTP1HandlerSelector {
         outputLocation: OperationOutputHTTPLocation,
         operationDelegate: OperationDelegateType)
         where DefaultOperationDelegateType.RequestHeadType == OperationDelegateType.RequestHeadType,
+        DefaultOperationDelegateType.TraceContextType == OperationDelegateType.TraceContextType,
         DefaultOperationDelegateType.ResponseHandlerType == OperationDelegateType.ResponseHandlerType {
             
             func inputProvider(requestHead: OperationDelegateType.RequestHeadType, body: Data?) throws -> InputType {
@@ -104,7 +105,7 @@ public extension SmokeHTTP1HandlerSelector {
             func outputHandler(requestHead: OperationDelegateType.RequestHeadType,
                                output: OutputType,
                                responseHandler: OperationDelegateType.ResponseHandlerType,
-                               invocationContext: SmokeServerInvocationContext) {
+                               invocationContext: SmokeServerInvocationContext<TraceContextType>) {
                 operationDelegate.handleResponseForOperation(requestHead: requestHead,
                                                              location: outputLocation,
                                                              output: output,
@@ -171,6 +172,7 @@ public extension SmokeHTTP1HandlerSelector {
         allowedErrors: [(ErrorType, Int)],
         operationDelegate: OperationDelegateType)
     where DefaultOperationDelegateType.RequestHeadType == OperationDelegateType.RequestHeadType,
+    DefaultOperationDelegateType.TraceContextType == OperationDelegateType.TraceContextType,
     DefaultOperationDelegateType.ResponseHandlerType == OperationDelegateType.ResponseHandlerType {
         
         let handler = OperationHandler(

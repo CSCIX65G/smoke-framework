@@ -1,4 +1,4 @@
-// Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License").
 // You may not use this file except in compliance with the License.
@@ -19,13 +19,15 @@ import Foundation
 import NIO
 import NIOHTTP1
 import NIOFoundationCompat
-import SmokeOperations
 import Logging
+import SmokeInvocation
 
 /**
  Handler that manages the inbound channel for a HTTP Request.
  */
-class HTTP1ChannelInboundHandler: ChannelInboundHandler {
+class HTTP1ChannelInboundHandler<HTTP1RequestHandlerType: HTTP1RequestHandler,
+                                 InvocationContext: HTTP1RequestInvocationContext>: ChannelInboundHandler
+        where HTTP1RequestHandlerType.ResponseHandlerType == StandardHTTP1ResponseHandler<InvocationContext> {
     typealias InboundIn = HTTPServerRequestPart
     typealias OutboundOut = HTTPServerResponsePart
     
@@ -175,30 +177,35 @@ class HTTP1ChannelInboundHandler: ChannelInboundHandler {
             }
         }
         
+        mutating func responseFullSent() {
+            switch self {
+            case .pendingResponse:
+                self = .idle
+            case .idle, .waitingForRequestBody, .receivingRequestBody:
+                assertionFailure("Invalid state for response fully sent: \(self)")
+                
+                fatalError()
+            }
+        }
+        
         mutating func updateKeepAliveStatus(keepAliveStatus: Bool) -> Bool {
             switch self {
-            case .waitingForRequestBody:
-                return true
-            case .receivingRequestBody:
+            case .idle, .waitingForRequestBody, .receivingRequestBody:
                 return true
             case .pendingResponse(let pendingResponse):
                 self = .pendingResponse(PendingResponse(pendingResponse: pendingResponse, keepAliveStatus: keepAliveStatus))
                 
                 return false
-            case .idle:
-                assertionFailure("Invalid state to update keep alive status: \(self)")
-                
-                fatalError()
             }
         }
     }
     
-    private let handler: HTTP1RequestHandler
+    private let handler: HTTP1RequestHandlerType
     private let invocationStrategy: InvocationStrategy
     
     private var state = State.idle
     
-    init(handler: HTTP1RequestHandler,
+    init(handler: HTTP1RequestHandlerType,
          invocationStrategy: InvocationStrategy) {
         self.handler = handler
         self.invocationStrategy = invocationStrategy
@@ -243,12 +250,17 @@ class HTTP1ChannelInboundHandler: ChannelInboundHandler {
         
         logger.debug("Handling request body with \(bodyData?.count ?? 0) size.")
         
+        func onComplete() {
+            self.state.responseFullSent()
+        }
+        
         // create a response handler for this request
-        let responseHandler = StandardHTTP1ResponseHandler(
+        let responseHandler = StandardHTTP1ResponseHandler<HTTP1RequestHandlerType.ResponseHandlerType.InvocationContext>(
             requestHead: requestHead,
             keepAliveStatus: pendingResponse.keepAliveStatus,
             context: context,
-            wrapOutboundOut: wrapOutboundOut)
+            wrapOutboundOut: wrapOutboundOut,
+            onComplete: onComplete)
     
         let currentHandler = handler
         

@@ -1,4 +1,4 @@
-// Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License").
 // You may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ public extension OperationHandler {
             allowedErrors: [(ErrorType, Int)],
             operationDelegate: OperationDelegateType)
     where RequestHeadType == OperationDelegateType.RequestHeadType,
+    TraceContextType == OperationDelegateType.TraceContextType,
     ResponseHandlerType == OperationDelegateType.ResponseHandlerType {
         
         /**
@@ -50,7 +51,7 @@ public extension OperationHandler {
          * provides an error, the responseHandler is called with that error.
          */
         let wrappedInputHandler = { (input: InputType, requestHead: RequestHeadType, context: ContextType,
-            responseHandler: ResponseHandlerType, invocationContext: SmokeServerInvocationContext) in
+            responseHandler: ResponseHandlerType, invocationContext: SmokeServerInvocationContext<TraceContextType>) in
             let handlerResult: NoOutputOperationHandlerResult<ErrorType>?
             do {
                 try operation(input, context) { error in
